@@ -1,0 +1,1936 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Treasure Hunt Game Notebook<a rel="noopener" class="anchor-link" href="#Treasure-Hunt-Game-Notebook">&#182;</a></h1><h2>Read and Review Your Starter Code<a rel="noopener" class="anchor-link" href="#Read-and-Review-Your-Starter-Code">&#182;</a></h2><p>The theme of this project is a popular treasure hunt game in which the player needs to find the treasure before the pirate does. While you will not be developing the entire game, you will write the part of the game that represents the intelligent agent, which is a pirate in this case. The pirate will try to find the optimal path to the treasure using deep Q-learning.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-success" style="color:black;">
+<b>To Begin:</b> Use this <b>TreasureHuntGame_starterCode.ipynb</b> file to complete your assignment. 
+<br/><br/>
+You have been provided with two Python classes and this notebook to help you with this assignment. The first class, <b>TreasureMaze.py</b>, represents the environment, which includes a maze object defined as a matrix. The second class, <b>GameExperience.py</b>, stores the episodes – that is, all the states that come in between the initial state and the terminal state. This is later used by the agent for learning by experience, called &quot;exploration&quot;. This notebook shows how to play a game. Your task is to complete the deep Q-learning implementation in the qtrain() function for which a skeleton implementation has been provided. 
+</div>
+<br/>
+<div class="alert alert-block alert-info" style="color:black;">
+<b>NOTE: </b>The code block you will need to complete will have <b>#TODO</b> as a header.
+<br/> First, read and review the next few code and instruction blocks to understand the code that you have been given.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color: #333333;">
+<b>Installations</b> The following command will install the necessary Python libraries to necessary to run this application. If you see a &quot;[notice] A new release of pip is available: 23.1.2 -&gt; 25.2&quot; at the end of the installation, you may disregard that statement. 
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Requirement already satisfied: numpy==1.26.4 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from -r requirements.txt (line 1)) (1.26.4)
+Requirement already satisfied: keras in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from -r requirements.txt (line 2)) (3.4.1)
+Requirement already satisfied: absl-py in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (2.1.0)
+Requirement already satisfied: rich in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (13.7.1)
+Requirement already satisfied: namex in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.0.8)
+Requirement already satisfied: h5py in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (3.11.0)
+Requirement already satisfied: optree in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.12.1)
+Requirement already satisfied: ml-dtypes in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.4.0)
+Requirement already satisfied: packaging in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (24.1)
+Requirement already satisfied: typing-extensions&gt;=4.5.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from optree-&gt;keras-&gt;-r requirements.txt (line 2)) (4.12.2)
+Requirement already satisfied: markdown-it-py&gt;=2.2.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from rich-&gt;keras-&gt;-r requirements.txt (line 2)) (3.0.0)
+Requirement already satisfied: pygments&lt;3.0.0,&gt;=2.13.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from rich-&gt;keras-&gt;-r requirements.txt (line 2)) (2.18.0)
+Requirement already satisfied: mdurl~=0.1 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from markdown-it-py&gt;=2.2.0-&gt;rich-&gt;keras-&gt;-r requirements.txt (line 2)) (0.1.2)
+
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> A new release of pip is available: <span class="ansi-red-fg">24.1.2</span> -&gt; <span class="ansi-green-fg">26.0.1</span>
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> To update, run: <span class="ansi-green-fg">pip install --upgrade pip</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Tensorflow CPU Acceleration Warning</h2>
+<div class="alert alert-block alert-danger" style="color: #333333;">
+<b>GPU/CUDA/Memory Warnings/Errors:</b> You may receive some errors referencing that GPUs will not be used, CUDA could not be found, or free system memory allocation errors. These and a few others, are standard errors that can be ignored here as they are environment based.<br/><br/>
+<b>Example messages:</b>
+<ul>
+<li>oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders</li>
+<li>WARNING: All log messages before absl::InitializeLog() is called are written to STDERR</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">clone_model</span>
+<span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Activation</span><span class="p">,</span> <span class="n">PReLU</span>
+<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="kn">import</span> <span class="n">SGD</span> <span class="p">,</span> <span class="n">Adam</span><span class="p">,</span> <span class="n">RMSprop</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">TreasureMaze</span> <span class="kn">import</span> <span class="n">TreasureMaze</span>
+<span class="kn">from</span> <span class="nn">GameExperience</span> <span class="kn">import</span> <span class="n">GameExperience</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2> Maze Object Generation</h2>
+<div class="alert alert-block alert-info" style="color:black;">
+<b>NOTE:</b>  The following code block contains an 8x8 matrix that will be used as a maze object:
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">maze</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Helper Functions and Global Variables</h2>
+<div class="alert alert-block alert-info" style="color:black;">
+This <b>show()</b> helper function allows a visual representation of the maze object:
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="s1">&#39;on&#39;</span><span class="p">)</span>
+    <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ncols</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="ow">in</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
+        <span class="n">canvas</span><span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="n">pirate_row</span><span class="p">,</span> <span class="n">pirate_col</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">state</span>
+    <span class="n">canvas</span><span class="p">[</span><span class="n">pirate_row</span><span class="p">,</span> <span class="n">pirate_col</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>   <span class="c1"># pirate cell</span>
+    <span class="n">canvas</span><span class="p">[</span><span class="n">nrows</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span> <span class="c1"># treasure cell</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The <b>pirate agent</b> can move in four directions: left, right, up, and down.</p>
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note:</b> While the agent primarily learns by experience through exploitation, often, the agent can choose to explore the environment to find previously undiscovered paths. This is called &quot;exploration&quot; and is defined by epsilon. This value is the <b>EXPLORATION</b> values from the Cartpole assignment. The hyperparameters are provided here and used in the <b>qtrain()</b> method. 
+You are encouraged to try various values for the exploration factor and see how the algorithm performs.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">LEFT</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">UP</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">RIGHT</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">DOWN</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="c1"># Exploration factor</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">epsilon_min</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">epsilon_decay</span> <span class="o">=</span> <span class="mf">0.995</span>
+<span class="n">patience</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Actions dictionary</span>
+<span class="n">actions_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LEFT</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+    <span class="n">UP</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">,</span>
+    <span class="n">RIGHT</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span>
+    <span class="n">DOWN</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">num_actions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actions_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The sample code block and output below show creating a maze object and performing one action (DOWN), which returns the reward. The resulting updated environment is visualized.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">canvas</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_over</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;reward=&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>reward= -0.04
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x76cbe8107310&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>NOTE:</b> This <b>play_game()</b> function simulates a full game based on the provided trained model. The other parameters include the TreasureMaze object, the starting position of the pirate and max amount of steps to make sure the code does not get stuck in a loop.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">pirate_cell</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">qmaze</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pirate_cell</span><span class="p">)</span>
+    <span class="n">envstate</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">observe</span><span class="p">()</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">max_steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">max_steps</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="mi">4</span>  <span class="c1"># safety cutoff</span>
+
+    <span class="k">while</span> <span class="n">steps</span> <span class="o">&lt;</span> <span class="n">max_steps</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">envstate</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">envstate</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_status</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;win&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;lose&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># timed out with no result</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b>
+    This <b>completion_check()</b> function helps you to determine whether the pirate can win any game at all. If your maze is not well designed, the pirate may not win any game at all. In this case, your training would not yield any result. The provided maze in this notebook ensures that there is a path to win and you can run this method to check.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[22]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze_or_qmaze</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Accept either raw numpy maze or TreasureMaze instance</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maze_or_qmaze</span><span class="p">,</span> <span class="n">TreasureMaze</span><span class="p">):</span>
+        <span class="n">qmaze</span> <span class="o">=</span> <span class="n">maze_or_qmaze</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze_or_qmaze</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">free_cells</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">valid_actions</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="n">max_steps</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b>
+The <b>build_model()</b> function in the block below will build the neural network model. Review the code and note the number of layers, as well as the activation, optimizer, and loss functions that are used to train the model.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[23]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="n">maze</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PReLU</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PReLU</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_actions</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note:</b>
+    This <b>train_step()</b> helper function in the block below is used to help predict Q-values (quality values) in the current modelto see how good each action is in a given state and improve the Q-network by reducing the gap between what is predicted and what should have been predicted. 
+</div>
+<br/>
+<div class="alert alert-block alert-info" style="color:black;">
+If you&#39;re interested in reading up on the <i>@tf.function</i>, which is a decorator for Tensorflow to run this code into a TensorFlow computation graph, please refer to this link: <a rel="noopener" href="https://www.tensorflow.org/guide/intro_to_graphs">https://www.tensorflow.org/guide/intro_to_graphs</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Tensorflow GPU Warning</h2>
+<div class="alert alert-block alert-danger" style="color: #333333;">
+    You will see a <b>warning in red</b> &quot;INTERNAL: CUDA Runtime error: Failed call to cudaGetRuntimeVersion: Error loading CUDA libraries. GPU will not be used.&quot;. This is simply coming from <b>Tensorflow skipping using GPU for this assignment.</b>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[24]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">MeanSquaredError</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">()</span>
+
+<span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">q_values</span><span class="p">)</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>#TODO: Complete the Q-Training Algorithm Code Block<a rel="noopener" class="anchor-link" href="#%23TODO:-Complete-the-Q-Training-Algorithm-Code-Block">&#182;</a></h1><div class="alert alert-block alert-info" style="color:black;">
+    This is your deep Q-learning implementation. The goal of your deep Q-learning implementation is to find the best possible navigation sequence that results in reaching the treasure cell while maximizing the reward. In your implementation, you need to determine the optimal number of epochs to achieve a 100% win rate.
+</div>
+<b>Pseudocode:</b>
+<br/>
+    For each epoch:
+        Reset the environment at a random starting cell
+        agent_cell = randomly select a free cell
+        <br/>
+<b>Hint:</b> Review the reset method in the TreasureMaze.py class.
+
+<pre><code>    Set the initial environment state
+    env_state should reference the environment&#39;s current state
+    Hint: Review the observe method in the TreasureMaze.py class.
+
+    While game status is not game over:
+       previous_envstate = env_state
+        Decide on an action:
+            - If possible, take a random valid exploration action and 
+              randomly choose action (left, right, up, down)
+              and assign it to an action variable
+            - Else, pick the best exploitation action from the model and assign it to an action variable
+              Hint: Review the predict method in the GameExperience.py class.
+
+       Retrieve the values below from the act() method.
+       env_state, reward, game_status = qmaze.act(action)
+       Hint: Review the act method in the TreasureMaze.py class.
+
+        Track the wins and losses from the game_status using win_history 
+     
+       Store the episode below in the Experience replay object
+       episode = [previous_envstate, action, reward, envstate, game_status]
+       Hint: Review the remember method in the GameExperience.py class.
+    
+       Train neural network model and evaluate loss
+       Hint: Call GameExperience.get_data to retrieve training data (input and target) 
+       and pass to the train_step method and assign it to batch_loss and append to the loss variable
+    
+  If the win rate is above the threshold and your model passes the completion check, that would be your epoch.</code></pre>
+<p>Note: A 100% win rate <b>DOES NOT EXPLICITLY MEAN</b> that you have solved the maze. It simply indicates that during the last evaluation, the pirate <i>happened</i> to get to the treasure. Be sure to utilise the <b>completion_check()</b> function to validate your pirate found the treasure at every starting point and consistently!</p>
+<p><b> You will need to complete the section starting with #START_HERE. Please use the pseudocode above as guidance. </b></p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[32]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">qtrain</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">,</span> <span class="o">**</span><span class="n">opt</span><span class="p">):</span>
+    <span class="c1"># exploration factor</span>
+    <span class="k">global</span> <span class="n">epsilon</span> 
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">random</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">clone_model</span>
+
+    <span class="c1"># Number of epochs</span>
+    <span class="n">n_epoch</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_epoch&#39;</span><span class="p">,</span> <span class="mi">15000</span><span class="p">)</span>
+
+    <span class="c1"># Maximum memory to store episodes</span>
+    <span class="n">max_memory</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_memory&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1"># Maximum data size for training</span>
+    <span class="n">data_size</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_size&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Frequency of target network updates</span>
+    <span class="n">target_update_freq</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_update_freq&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Start time</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># Environment</span>
+    <span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+
+    <span class="c1"># Target network</span>
+    <span class="n">target_model</span> <span class="o">=</span> <span class="n">clone_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">target_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+
+    <span class="c1"># Experience replay</span>
+    <span class="n">experience</span> <span class="o">=</span> <span class="n">GameExperience</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">target_model</span><span class="p">,</span> <span class="n">max_memory</span><span class="o">=</span><span class="n">max_memory</span><span class="p">)</span>
+
+    <span class="n">win_history</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">hsize</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">win_rate</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># ================= START =================</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epoch</span><span class="p">):</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">n_episodes</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># FIX: your environment requires pirate argument</span>
+        <span class="n">qmaze</span><span class="o">.</span><span class="n">reset</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="n">game_over</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Run one episode</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">game_over</span><span class="p">:</span>
+
+            <span class="n">state</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">observe</span><span class="p">()</span>
+
+            <span class="c1"># epsilon-greedy action selection</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">qmaze</span><span class="o">.</span><span class="n">valid_actions</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="n">next_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_over</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="n">experience</span><span class="o">.</span><span class="n">remember</span><span class="p">([</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span> <span class="n">game_over</span><span class="p">])</span>
+
+            <span class="n">n_episodes</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">experience</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">data_size</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Win tracking</span>
+        <span class="n">win</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">reward</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">win_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">win</span><span class="p">)</span>
+
+        <span class="c1"># Win rate</span>
+        <span class="n">win_rate</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">win_history</span><span class="p">[</span><span class="o">-</span><span class="n">hsize</span><span class="p">:])</span> <span class="o">/</span> <span class="n">hsize</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">win_history</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">hsize</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Update target network</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">target_update_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">target_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+
+        <span class="c1"># Time tracking</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+
+        <span class="c1"># Progress print</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch: </span><span class="si">{:03d}</span><span class="s2">/</span><span class="si">{:d}</span><span class="s2"> | Loss: </span><span class="si">{:.4f}</span><span class="s2"> | Episodes: </span><span class="si">{:d}</span><span class="s2"> | Win count: </span><span class="si">{:d}</span><span class="s2"> | Win rate: </span><span class="si">{:.3f}</span><span class="s2"> | time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">epoch</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">n_episodes</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">win_history</span><span class="p">),</span> <span class="n">win_rate</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+
+        <span class="c1"># Adjust epsilon</span>
+        <span class="k">if</span> <span class="n">win_rate</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">epsilon</span> <span class="o">*</span> <span class="n">epsilon_decay</span><span class="p">,</span> <span class="n">epsilon_min</span><span class="p">)</span>
+
+        <span class="c1"># Stop condition</span>
+        <span class="k">if</span> <span class="n">win_rate</span> <span class="o">&gt;=</span> <span class="mf">0.999</span> <span class="ow">and</span> <span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reached 100% win rate at epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="n">total_time</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training complete in:&quot;</span><span class="p">,</span> <span class="n">total_time</span><span class="p">)</span>
+
+<span class="c1"># This is a small utility for printing readable time strings:</span>
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.1f</span><span class="s2"> seconds&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span>
+    <span class="k">elif</span> <span class="n">seconds</span> <span class="o">&lt;</span> <span class="mi">4000</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">/</span> <span class="mf">60.0</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> minutes&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">m</span><span class="p">,)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">/</span> <span class="mf">3600.0</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> hours&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Test Your Model<a rel="noopener" class="anchor-link" href="#Test-Your-Model">&#182;</a></h2><p>Now we will start testing the deep Q-learning implementation. To begin, select <strong>Cell</strong>, then <strong>Run All</strong> from the menu bar. This will run your notebook. As it runs, you should see output begin to appear beneath the next few cells. The code below creates an <b>instance</b> of TreasureMaze. This does not show your actual training done.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[26]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x76cb3c4b59d0&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>In the next code block, you will build your model using the <b>build_model</b> function and train it using deep Q-learning. Note: This step takes several minutes to fully run.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-danger" style="color: #333333;">
+<b>WARNING</b>  If you did not attempt the assignment, the code <b>will</b> error out at this section.
+ </div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[33]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">qtrain</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">max_memory</span><span class="o">=</span><span class="mi">8</span><span class="o">*</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">data_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">target_update_freq</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Epoch: 000/999 | Loss: 0.0149 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 1.6 seconds
+Epoch: 001/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 1.7 seconds
+Epoch: 002/999 | Loss: 0.0061 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 1.8 seconds
+Epoch: 003/999 | Loss: 0.0060 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 1.8 seconds
+Epoch: 004/999 | Loss: 0.0017 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 1.9 seconds
+Epoch: 005/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.0 seconds
+Epoch: 006/999 | Loss: 0.0015 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.1 seconds
+Epoch: 007/999 | Loss: 0.0208 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.4 seconds
+Epoch: 008/999 | Loss: 0.0215 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.5 seconds
+Epoch: 009/999 | Loss: 0.0089 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.6 seconds
+Epoch: 010/999 | Loss: 0.0095 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.8 seconds
+Epoch: 011/999 | Loss: 0.0060 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.8 seconds
+Epoch: 012/999 | Loss: 0.0050 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 2.9 seconds
+Epoch: 013/999 | Loss: 0.0010 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.0 seconds
+Epoch: 014/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.1 seconds
+Epoch: 015/999 | Loss: 0.0003 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.1 seconds
+Epoch: 016/999 | Loss: 0.0008 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.2 seconds
+Epoch: 017/999 | Loss: 0.0029 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.3 seconds
+Epoch: 018/999 | Loss: 0.0024 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.4 seconds
+Epoch: 019/999 | Loss: 0.0009 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.5 seconds
+Epoch: 020/999 | Loss: 0.0020 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.6 seconds
+Epoch: 021/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.6 seconds
+Epoch: 022/999 | Loss: 0.0011 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.7 seconds
+Epoch: 023/999 | Loss: 0.0011 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.8 seconds
+Epoch: 024/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 3.9 seconds
+Epoch: 025/999 | Loss: 0.0019 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.0 seconds
+Epoch: 026/999 | Loss: 0.0017 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.0 seconds
+Epoch: 027/999 | Loss: 0.0008 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.1 seconds
+Epoch: 028/999 | Loss: 0.0006 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.2 seconds
+Epoch: 029/999 | Loss: 0.0014 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.3 seconds
+Epoch: 030/999 | Loss: 0.0006 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.4 seconds
+Epoch: 031/999 | Loss: 0.0004 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.5 seconds
+Epoch: 032/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.5 seconds
+Epoch: 033/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.6 seconds
+Epoch: 034/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.8 seconds
+Epoch: 035/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.8 seconds
+Epoch: 036/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 4.9 seconds
+Epoch: 037/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.0 seconds
+Epoch: 038/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.1 seconds
+Epoch: 039/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.3 seconds
+Epoch: 040/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.4 seconds
+Epoch: 041/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.5 seconds
+Epoch: 042/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.5 seconds
+Epoch: 043/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.6 seconds
+Epoch: 044/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.7 seconds
+Epoch: 045/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.8 seconds
+Epoch: 046/999 | Loss: 0.0005 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 5.9 seconds
+Epoch: 047/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.0 seconds
+Epoch: 048/999 | Loss: 0.0003 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.1 seconds
+Epoch: 049/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.2 seconds
+Epoch: 050/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.3 seconds
+Epoch: 051/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.4 seconds
+Epoch: 052/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.5 seconds
+Epoch: 053/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.5 seconds
+Epoch: 054/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.6 seconds
+Epoch: 055/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.8 seconds
+Epoch: 056/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 6.9 seconds
+Epoch: 057/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.0 seconds
+Epoch: 058/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.1 seconds
+Epoch: 059/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.1 seconds
+Epoch: 060/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.2 seconds
+Epoch: 061/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.3 seconds
+Epoch: 062/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.4 seconds
+Epoch: 063/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.5 seconds
+Epoch: 064/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.5 seconds
+Epoch: 065/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.7 seconds
+Epoch: 066/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.8 seconds
+Epoch: 067/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 7.9 seconds
+Epoch: 068/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.0 seconds
+Epoch: 069/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.1 seconds
+Epoch: 070/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.2 seconds
+Epoch: 071/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.4 seconds
+Epoch: 072/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.5 seconds
+Epoch: 073/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.6 seconds
+Epoch: 074/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.7 seconds
+Epoch: 075/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.8 seconds
+Epoch: 076/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.8 seconds
+Epoch: 077/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 8.9 seconds
+Epoch: 078/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.0 seconds
+Epoch: 079/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.1 seconds
+Epoch: 080/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.2 seconds
+Epoch: 081/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.3 seconds
+Epoch: 082/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.4 seconds
+Epoch: 083/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.5 seconds
+Epoch: 084/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.6 seconds
+Epoch: 085/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.7 seconds
+Epoch: 086/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.7 seconds
+Epoch: 087/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 9.9 seconds
+Epoch: 088/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.0 seconds
+Epoch: 089/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.0 seconds
+Epoch: 090/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.1 seconds
+Epoch: 091/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.3 seconds
+Epoch: 092/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.4 seconds
+Epoch: 093/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.6 seconds
+Epoch: 094/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.6 seconds
+Epoch: 095/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.7 seconds
+Epoch: 096/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.8 seconds
+Epoch: 097/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 10.9 seconds
+Epoch: 098/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.0 seconds
+Epoch: 099/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.2 seconds
+Epoch: 100/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.3 seconds
+Epoch: 101/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.3 seconds
+Epoch: 102/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.4 seconds
+Epoch: 103/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.5 seconds
+Epoch: 104/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.6 seconds
+Epoch: 105/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.6 seconds
+Epoch: 106/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.8 seconds
+Epoch: 107/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 11.9 seconds
+Epoch: 108/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.0 seconds
+Epoch: 109/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.0 seconds
+Epoch: 110/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.1 seconds
+Epoch: 111/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.2 seconds
+Epoch: 112/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.3 seconds
+Epoch: 113/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.4 seconds
+Epoch: 114/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.5 seconds
+Epoch: 115/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.6 seconds
+Epoch: 116/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.7 seconds
+Epoch: 117/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.8 seconds
+Epoch: 118/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 12.9 seconds
+Epoch: 119/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.0 seconds
+Epoch: 120/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.1 seconds
+Epoch: 121/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.2 seconds
+Epoch: 122/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.3 seconds
+Epoch: 123/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.4 seconds
+Epoch: 124/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.5 seconds
+Epoch: 125/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.6 seconds
+Epoch: 126/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.7 seconds
+Epoch: 127/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.8 seconds
+Epoch: 128/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 13.9 seconds
+Epoch: 129/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.0 seconds
+Epoch: 130/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.1 seconds
+Epoch: 131/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.2 seconds
+Epoch: 132/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.3 seconds
+Epoch: 133/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.5 seconds
+Epoch: 134/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.6 seconds
+Epoch: 135/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.7 seconds
+Epoch: 136/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.8 seconds
+Epoch: 137/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 14.9 seconds
+Epoch: 138/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.0 seconds
+Epoch: 139/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.1 seconds
+Epoch: 140/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.2 seconds
+Epoch: 141/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.3 seconds
+Epoch: 142/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.5 seconds
+Epoch: 143/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.6 seconds
+Epoch: 144/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.8 seconds
+Epoch: 145/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 15.9 seconds
+Epoch: 146/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.1 seconds
+Epoch: 147/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.2 seconds
+Epoch: 148/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.3 seconds
+Epoch: 149/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.5 seconds
+Epoch: 150/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.6 seconds
+Epoch: 151/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.7 seconds
+Epoch: 152/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.7 seconds
+Epoch: 153/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 16.9 seconds
+Epoch: 154/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.1 seconds
+Epoch: 155/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.1 seconds
+Epoch: 156/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.3 seconds
+Epoch: 157/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.4 seconds
+Epoch: 158/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.5 seconds
+Epoch: 159/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.7 seconds
+Epoch: 160/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.8 seconds
+Epoch: 161/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 17.9 seconds
+Epoch: 162/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.0 seconds
+Epoch: 163/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.2 seconds
+Epoch: 164/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.3 seconds
+Epoch: 165/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.5 seconds
+Epoch: 166/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.6 seconds
+Epoch: 167/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.8 seconds
+Epoch: 168/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 18.9 seconds
+Epoch: 169/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.0 seconds
+Epoch: 170/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.2 seconds
+Epoch: 171/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.3 seconds
+Epoch: 172/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.5 seconds
+Epoch: 173/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.5 seconds
+Epoch: 174/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.6 seconds
+Epoch: 175/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.8 seconds
+Epoch: 176/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 19.9 seconds
+Epoch: 177/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.0 seconds
+Epoch: 178/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.1 seconds
+Epoch: 179/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.3 seconds
+Epoch: 180/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.4 seconds
+Epoch: 181/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.5 seconds
+Epoch: 182/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.6 seconds
+Epoch: 183/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 20.8 seconds
+Epoch: 184/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.0 seconds
+Epoch: 185/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.0 seconds
+Epoch: 186/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.2 seconds
+Epoch: 187/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.4 seconds
+Epoch: 188/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.6 seconds
+Epoch: 189/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.7 seconds
+Epoch: 190/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 21.8 seconds
+Epoch: 191/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.0 seconds
+Epoch: 192/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.1 seconds
+Epoch: 193/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.2 seconds
+Epoch: 194/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.4 seconds
+Epoch: 195/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.5 seconds
+Epoch: 196/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.6 seconds
+Epoch: 197/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.7 seconds
+Epoch: 198/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 22.8 seconds
+Epoch: 199/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.0 seconds
+Epoch: 200/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.1 seconds
+Epoch: 201/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.1 seconds
+Epoch: 202/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.3 seconds
+Epoch: 203/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.4 seconds
+Epoch: 204/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.6 seconds
+Epoch: 205/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.7 seconds
+Epoch: 206/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.8 seconds
+Epoch: 207/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 23.9 seconds
+Epoch: 208/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.1 seconds
+Epoch: 209/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.2 seconds
+Epoch: 210/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.4 seconds
+Epoch: 211/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.4 seconds
+Epoch: 212/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.6 seconds
+Epoch: 213/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.6 seconds
+Epoch: 214/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.7 seconds
+Epoch: 215/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 24.9 seconds
+Epoch: 216/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.0 seconds
+Epoch: 217/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.1 seconds
+Epoch: 218/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.3 seconds
+Epoch: 219/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.4 seconds
+Epoch: 220/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.6 seconds
+Epoch: 221/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.7 seconds
+Epoch: 222/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 25.8 seconds
+Epoch: 223/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.0 seconds
+Epoch: 224/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.1 seconds
+Epoch: 225/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.2 seconds
+Epoch: 226/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.4 seconds
+Epoch: 227/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.5 seconds
+Epoch: 228/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.6 seconds
+Epoch: 229/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.8 seconds
+Epoch: 230/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.9 seconds
+Epoch: 231/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 26.9 seconds
+Epoch: 232/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.1 seconds
+Epoch: 233/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.2 seconds
+Epoch: 234/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.3 seconds
+Epoch: 235/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.4 seconds
+Epoch: 236/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.5 seconds
+Epoch: 237/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.6 seconds
+Epoch: 238/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.8 seconds
+Epoch: 239/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 27.9 seconds
+Epoch: 240/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.1 seconds
+Epoch: 241/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.2 seconds
+Epoch: 242/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.4 seconds
+Epoch: 243/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.5 seconds
+Epoch: 244/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.7 seconds
+Epoch: 245/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.8 seconds
+Epoch: 246/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 28.9 seconds
+Epoch: 247/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.1 seconds
+Epoch: 248/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.2 seconds
+Epoch: 249/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.3 seconds
+Epoch: 250/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.5 seconds
+Epoch: 251/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.6 seconds
+Epoch: 252/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.8 seconds
+Epoch: 253/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 29.9 seconds
+Epoch: 254/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.0 seconds
+Epoch: 255/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.1 seconds
+Epoch: 256/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.2 seconds
+Epoch: 257/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.4 seconds
+Epoch: 258/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.6 seconds
+Epoch: 259/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.7 seconds
+Epoch: 260/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.8 seconds
+Epoch: 261/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 30.9 seconds
+Epoch: 262/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.1 seconds
+Epoch: 263/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.3 seconds
+Epoch: 264/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.3 seconds
+Epoch: 265/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.4 seconds
+Epoch: 266/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.6 seconds
+Epoch: 267/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.7 seconds
+Epoch: 268/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.8 seconds
+Epoch: 269/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 31.9 seconds
+Epoch: 270/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.0 seconds
+Epoch: 271/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.1 seconds
+Epoch: 272/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.1 seconds
+Epoch: 273/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.2 seconds
+Epoch: 274/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.4 seconds
+Epoch: 275/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.5 seconds
+Epoch: 276/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.7 seconds
+Epoch: 277/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 32.8 seconds
+Epoch: 278/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.0 seconds
+Epoch: 279/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.1 seconds
+Epoch: 280/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.3 seconds
+Epoch: 281/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.4 seconds
+Epoch: 282/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.5 seconds
+Epoch: 283/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.5 seconds
+Epoch: 284/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.6 seconds
+Epoch: 285/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.7 seconds
+Epoch: 286/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 33.9 seconds
+Epoch: 287/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.0 seconds
+Epoch: 288/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.0 seconds
+Epoch: 289/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.2 seconds
+Epoch: 290/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.3 seconds
+Epoch: 291/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.5 seconds
+Epoch: 292/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.5 seconds
+Epoch: 293/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.7 seconds
+Epoch: 294/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.8 seconds
+Epoch: 295/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 34.8 seconds
+Epoch: 296/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.0 seconds
+Epoch: 297/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.1 seconds
+Epoch: 298/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.3 seconds
+Epoch: 299/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.4 seconds
+Epoch: 300/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.6 seconds
+Epoch: 301/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.8 seconds
+Epoch: 302/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 35.9 seconds
+Epoch: 303/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.0 seconds
+Epoch: 304/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.1 seconds
+Epoch: 305/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.3 seconds
+Epoch: 306/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.4 seconds
+Epoch: 307/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.5 seconds
+Epoch: 308/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.6 seconds
+Epoch: 309/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.7 seconds
+Epoch: 310/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 36.9 seconds
+Epoch: 311/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.1 seconds
+Epoch: 312/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.1 seconds
+Epoch: 313/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.2 seconds
+Epoch: 314/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.4 seconds
+Epoch: 315/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.6 seconds
+Epoch: 316/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.7 seconds
+Epoch: 317/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 37.9 seconds
+Epoch: 318/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.0 seconds
+Epoch: 319/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.1 seconds
+Epoch: 320/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.3 seconds
+Epoch: 321/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.4 seconds
+Epoch: 322/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.5 seconds
+Epoch: 323/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.7 seconds
+Epoch: 324/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 38.8 seconds
+Epoch: 325/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.0 seconds
+Epoch: 326/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.1 seconds
+Epoch: 327/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.3 seconds
+Epoch: 328/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.4 seconds
+Epoch: 329/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.6 seconds
+Epoch: 330/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.8 seconds
+Epoch: 331/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 39.9 seconds
+Epoch: 332/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 40.1 seconds
+Epoch: 333/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 40.2 seconds
+Epoch: 334/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 40.4 seconds
+Epoch: 335/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 40.6 seconds
+Epoch: 336/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 40.7 seconds
+Epoch: 337/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 40.9 seconds
+Epoch: 338/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.0 seconds
+Epoch: 339/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.2 seconds
+Epoch: 340/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.3 seconds
+Epoch: 341/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.4 seconds
+Epoch: 342/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.5 seconds
+Epoch: 343/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.7 seconds
+Epoch: 344/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 41.8 seconds
+Epoch: 345/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.0 seconds
+Epoch: 346/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.2 seconds
+Epoch: 347/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.3 seconds
+Epoch: 348/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.4 seconds
+Epoch: 349/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.5 seconds
+Epoch: 350/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.7 seconds
+Epoch: 351/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.8 seconds
+Epoch: 352/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 42.9 seconds
+Epoch: 353/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 43.0 seconds
+Epoch: 354/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 43.2 seconds
+Epoch: 355/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 43.3 seconds
+Epoch: 356/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 43.5 seconds
+Epoch: 357/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 43.7 seconds
+Epoch: 358/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 43.8 seconds
+Epoch: 359/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.0 seconds
+Epoch: 360/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.1 seconds
+Epoch: 361/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.3 seconds
+Epoch: 362/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.4 seconds
+Epoch: 363/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.6 seconds
+Epoch: 364/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.6 seconds
+Epoch: 365/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 44.8 seconds
+Epoch: 366/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.0 seconds
+Epoch: 367/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.1 seconds
+Epoch: 368/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.3 seconds
+Epoch: 369/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.5 seconds
+Epoch: 370/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.6 seconds
+Epoch: 371/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.8 seconds
+Epoch: 372/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 45.9 seconds
+Epoch: 373/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.1 seconds
+Epoch: 374/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.2 seconds
+Epoch: 375/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.4 seconds
+Epoch: 376/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.5 seconds
+Epoch: 377/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.7 seconds
+Epoch: 378/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.8 seconds
+Epoch: 379/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 46.9 seconds
+Epoch: 380/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 47.1 seconds
+Epoch: 381/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 47.2 seconds
+Epoch: 382/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 47.4 seconds
+Epoch: 383/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 47.5 seconds
+Epoch: 384/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 47.7 seconds
+Epoch: 385/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 47.8 seconds
+Epoch: 386/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.0 seconds
+Epoch: 387/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.2 seconds
+Epoch: 388/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.3 seconds
+Epoch: 389/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.4 seconds
+Epoch: 390/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.6 seconds
+Epoch: 391/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.7 seconds
+Epoch: 392/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.7 seconds
+Epoch: 393/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 48.9 seconds
+Epoch: 394/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.1 seconds
+Epoch: 395/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.2 seconds
+Epoch: 396/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.4 seconds
+Epoch: 397/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.5 seconds
+Epoch: 398/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.7 seconds
+Epoch: 399/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.8 seconds
+Epoch: 400/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 49.9 seconds
+Epoch: 401/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.1 seconds
+Epoch: 402/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.2 seconds
+Epoch: 403/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.4 seconds
+Epoch: 404/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.5 seconds
+Epoch: 405/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.6 seconds
+Epoch: 406/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.7 seconds
+Epoch: 407/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 50.9 seconds
+Epoch: 408/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.0 seconds
+Epoch: 409/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.1 seconds
+Epoch: 410/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.3 seconds
+Epoch: 411/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.5 seconds
+Epoch: 412/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.6 seconds
+Epoch: 413/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.8 seconds
+Epoch: 414/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 51.9 seconds
+Epoch: 415/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.0 seconds
+Epoch: 416/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.2 seconds
+Epoch: 417/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.3 seconds
+Epoch: 418/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.5 seconds
+Epoch: 419/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.6 seconds
+Epoch: 420/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.8 seconds
+Epoch: 421/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 52.9 seconds
+Epoch: 422/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.1 seconds
+Epoch: 423/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.2 seconds
+Epoch: 424/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.4 seconds
+Epoch: 425/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.4 seconds
+Epoch: 426/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.6 seconds
+Epoch: 427/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.7 seconds
+Epoch: 428/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 53.9 seconds
+Epoch: 429/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.0 seconds
+Epoch: 430/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.1 seconds
+Epoch: 431/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.3 seconds
+Epoch: 432/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.4 seconds
+Epoch: 433/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.6 seconds
+Epoch: 434/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.7 seconds
+Epoch: 435/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 54.9 seconds
+Epoch: 436/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 55.1 seconds
+Epoch: 437/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 55.2 seconds
+Epoch: 438/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 55.3 seconds
+Epoch: 439/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 55.5 seconds
+Epoch: 440/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 55.7 seconds
+Epoch: 441/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 55.8 seconds
+Epoch: 442/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.0 seconds
+Epoch: 443/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.1 seconds
+Epoch: 444/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.3 seconds
+Epoch: 445/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.4 seconds
+Epoch: 446/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.5 seconds
+Epoch: 447/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.7 seconds
+Epoch: 448/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 56.8 seconds
+Epoch: 449/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.0 seconds
+Epoch: 450/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.0 seconds
+Epoch: 451/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.2 seconds
+Epoch: 452/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.3 seconds
+Epoch: 453/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.4 seconds
+Epoch: 454/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.6 seconds
+Epoch: 455/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.6 seconds
+Epoch: 456/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.8 seconds
+Epoch: 457/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 57.9 seconds
+Epoch: 458/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 58.1 seconds
+Epoch: 459/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 58.2 seconds
+Epoch: 460/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 58.4 seconds
+Epoch: 461/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 58.5 seconds
+Epoch: 462/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 58.7 seconds
+Epoch: 463/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 58.8 seconds
+Epoch: 464/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.0 seconds
+Epoch: 465/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.1 seconds
+Epoch: 466/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.3 seconds
+Epoch: 467/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.4 seconds
+Epoch: 468/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.6 seconds
+Epoch: 469/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.7 seconds
+Epoch: 470/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 59.9 seconds
+Epoch: 471/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.0 seconds
+Epoch: 472/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.2 seconds
+Epoch: 473/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.3 seconds
+Epoch: 474/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.4 seconds
+Epoch: 475/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.6 seconds
+Epoch: 476/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.7 seconds
+Epoch: 477/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 60.9 seconds
+Epoch: 478/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 61.1 seconds
+Epoch: 479/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 61.2 seconds
+Epoch: 480/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 61.4 seconds
+Epoch: 481/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 61.5 seconds
+Epoch: 482/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 61.7 seconds
+Epoch: 483/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 61.8 seconds
+Epoch: 484/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.0 seconds
+Epoch: 485/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.2 seconds
+Epoch: 486/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.3 seconds
+Epoch: 487/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.5 seconds
+Epoch: 488/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.6 seconds
+Epoch: 489/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.8 seconds
+Epoch: 490/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 62.9 seconds
+Epoch: 491/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.1 seconds
+Epoch: 492/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.2 seconds
+Epoch: 493/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.3 seconds
+Epoch: 494/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.5 seconds
+Epoch: 495/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.6 seconds
+Epoch: 496/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.8 seconds
+Epoch: 497/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 63.9 seconds
+Epoch: 498/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 64.1 seconds
+Epoch: 499/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 64.2 seconds
+Epoch: 500/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 64.4 seconds
+Epoch: 501/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 64.5 seconds
+Epoch: 502/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 64.7 seconds
+Epoch: 503/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 64.8 seconds
+Epoch: 504/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.0 seconds
+Epoch: 505/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.1 seconds
+Epoch: 506/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.3 seconds
+Epoch: 507/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.4 seconds
+Epoch: 508/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.6 seconds
+Epoch: 509/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.7 seconds
+Epoch: 510/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 65.8 seconds
+Epoch: 511/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.0 seconds
+Epoch: 512/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.1 seconds
+Epoch: 513/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.3 seconds
+Epoch: 514/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.4 seconds
+Epoch: 515/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.6 seconds
+Epoch: 516/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.7 seconds
+Epoch: 517/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 66.9 seconds
+Epoch: 518/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 67.0 seconds
+Epoch: 519/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 67.2 seconds
+Epoch: 520/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 67.3 seconds
+Epoch: 521/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 67.5 seconds
+Epoch: 522/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 67.7 seconds
+Epoch: 523/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 67.8 seconds
+Epoch: 524/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.0 seconds
+Epoch: 525/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.1 seconds
+Epoch: 526/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.2 seconds
+Epoch: 527/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.4 seconds
+Epoch: 528/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.5 seconds
+Epoch: 529/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.6 seconds
+Epoch: 530/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 68.8 seconds
+Epoch: 531/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.0 seconds
+Epoch: 532/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.1 seconds
+Epoch: 533/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.2 seconds
+Epoch: 534/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.4 seconds
+Epoch: 535/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.5 seconds
+Epoch: 536/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.7 seconds
+Epoch: 537/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 69.8 seconds
+Epoch: 538/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.0 seconds
+Epoch: 539/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.1 seconds
+Epoch: 540/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.3 seconds
+Epoch: 541/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.5 seconds
+Epoch: 542/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.6 seconds
+Epoch: 543/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.8 seconds
+Epoch: 544/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 70.9 seconds
+Epoch: 545/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 71.1 seconds
+Epoch: 546/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 71.2 seconds
+Epoch: 547/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 71.4 seconds
+Epoch: 548/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 71.5 seconds
+Epoch: 549/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 71.7 seconds
+Epoch: 550/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 71.8 seconds
+Epoch: 551/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.0 seconds
+Epoch: 552/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.1 seconds
+Epoch: 553/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.3 seconds
+Epoch: 554/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.4 seconds
+Epoch: 555/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.6 seconds
+Epoch: 556/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.7 seconds
+Epoch: 557/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 72.8 seconds
+Epoch: 558/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.0 seconds
+Epoch: 559/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.1 seconds
+Epoch: 560/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.3 seconds
+Epoch: 561/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.5 seconds
+Epoch: 562/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.6 seconds
+Epoch: 563/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.8 seconds
+Epoch: 564/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 73.9 seconds
+Epoch: 565/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.0 seconds
+Epoch: 566/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.2 seconds
+Epoch: 567/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.3 seconds
+Epoch: 568/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.5 seconds
+Epoch: 569/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.6 seconds
+Epoch: 570/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.8 seconds
+Epoch: 571/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 74.9 seconds
+Epoch: 572/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.0 seconds
+Epoch: 573/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.2 seconds
+Epoch: 574/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.3 seconds
+Epoch: 575/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.5 seconds
+Epoch: 576/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.6 seconds
+Epoch: 577/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.8 seconds
+Epoch: 578/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 75.9 seconds
+Epoch: 579/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 76.1 seconds
+Epoch: 580/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 76.2 seconds
+Epoch: 581/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 76.4 seconds
+Epoch: 582/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 76.5 seconds
+Epoch: 583/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 76.7 seconds
+Epoch: 584/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 76.8 seconds
+Epoch: 585/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.0 seconds
+Epoch: 586/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.2 seconds
+Epoch: 587/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.3 seconds
+Epoch: 588/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.4 seconds
+Epoch: 589/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.6 seconds
+Epoch: 590/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.7 seconds
+Epoch: 591/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 77.9 seconds
+Epoch: 592/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.0 seconds
+Epoch: 593/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.2 seconds
+Epoch: 594/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.3 seconds
+Epoch: 595/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.5 seconds
+Epoch: 596/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.6 seconds
+Epoch: 597/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.8 seconds
+Epoch: 598/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 78.9 seconds
+Epoch: 599/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 79.1 seconds
+Epoch: 600/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 79.2 seconds
+Epoch: 601/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 79.4 seconds
+Epoch: 602/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 79.5 seconds
+Epoch: 603/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 79.7 seconds
+Epoch: 604/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 79.8 seconds
+Epoch: 605/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.0 seconds
+Epoch: 606/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.1 seconds
+Epoch: 607/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.3 seconds
+Epoch: 608/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.4 seconds
+Epoch: 609/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.6 seconds
+Epoch: 610/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.8 seconds
+Epoch: 611/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 80.9 seconds
+Epoch: 612/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 81.0 seconds
+Epoch: 613/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 81.2 seconds
+Epoch: 614/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 81.4 seconds
+Epoch: 615/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 81.5 seconds
+Epoch: 616/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 81.7 seconds
+Epoch: 617/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 81.8 seconds
+Epoch: 618/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.0 seconds
+Epoch: 619/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.1 seconds
+Epoch: 620/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.3 seconds
+Epoch: 621/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.4 seconds
+Epoch: 622/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.6 seconds
+Epoch: 623/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.7 seconds
+Epoch: 624/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 82.9 seconds
+Epoch: 625/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 83.0 seconds
+Epoch: 626/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 83.2 seconds
+Epoch: 627/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 83.3 seconds
+Epoch: 628/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 83.5 seconds
+Epoch: 629/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 83.6 seconds
+Epoch: 630/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 83.8 seconds
+Epoch: 631/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 84.2 seconds
+Epoch: 632/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 84.3 seconds
+Epoch: 633/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 84.5 seconds
+Epoch: 634/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 84.6 seconds
+Epoch: 635/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 84.8 seconds
+Epoch: 636/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 84.9 seconds
+Epoch: 637/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 85.1 seconds
+Epoch: 638/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 85.2 seconds
+Epoch: 639/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 85.4 seconds
+Epoch: 640/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 85.5 seconds
+Epoch: 641/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 85.7 seconds
+Epoch: 642/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 85.8 seconds
+Epoch: 643/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.0 seconds
+Epoch: 644/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.1 seconds
+Epoch: 645/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.3 seconds
+Epoch: 646/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.4 seconds
+Epoch: 647/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.6 seconds
+Epoch: 648/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.7 seconds
+Epoch: 649/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 86.8 seconds
+Epoch: 650/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.0 seconds
+Epoch: 651/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.2 seconds
+Epoch: 652/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.3 seconds
+Epoch: 653/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.5 seconds
+Epoch: 654/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.6 seconds
+Epoch: 655/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.7 seconds
+Epoch: 656/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 87.8 seconds
+Epoch: 657/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.0 seconds
+Epoch: 658/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.1 seconds
+Epoch: 659/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.3 seconds
+Epoch: 660/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.4 seconds
+Epoch: 661/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.6 seconds
+Epoch: 662/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.8 seconds
+Epoch: 663/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 88.9 seconds
+Epoch: 664/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 89.1 seconds
+Epoch: 665/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 89.3 seconds
+Epoch: 666/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 89.4 seconds
+Epoch: 667/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 89.6 seconds
+Epoch: 668/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 89.7 seconds
+Epoch: 669/999 | Loss: 0.0006 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 89.9 seconds
+Epoch: 670/999 | Loss: 0.0005 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.1 seconds
+Epoch: 671/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.2 seconds
+Epoch: 672/999 | Loss: 0.0003 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.3 seconds
+Epoch: 673/999 | Loss: 0.0003 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.5 seconds
+Epoch: 674/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.6 seconds
+Epoch: 675/999 | Loss: 0.0003 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.8 seconds
+Epoch: 676/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 90.9 seconds
+Epoch: 677/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 91.1 seconds
+Epoch: 678/999 | Loss: 0.0002 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 91.3 seconds
+Epoch: 679/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 91.4 seconds
+Epoch: 680/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 91.6 seconds
+Epoch: 681/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 91.7 seconds
+Epoch: 682/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 91.9 seconds
+Epoch: 683/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.1 seconds
+Epoch: 684/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.2 seconds
+Epoch: 685/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.3 seconds
+Epoch: 686/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.5 seconds
+Epoch: 687/999 | Loss: 0.0001 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.6 seconds
+Epoch: 688/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.8 seconds
+Epoch: 689/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 92.9 seconds
+Epoch: 690/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.1 seconds
+Epoch: 691/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.2 seconds
+Epoch: 692/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.4 seconds
+Epoch: 693/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.5 seconds
+Epoch: 694/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.6 seconds
+Epoch: 695/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.8 seconds
+Epoch: 696/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 93.9 seconds
+Epoch: 697/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.1 seconds
+Epoch: 698/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.2 seconds
+Epoch: 699/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.3 seconds
+Epoch: 700/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.5 seconds
+Epoch: 701/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.6 seconds
+Epoch: 702/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.8 seconds
+Epoch: 703/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 94.9 seconds
+Epoch: 704/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 95.1 seconds
+Epoch: 705/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 95.2 seconds
+Epoch: 706/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 95.3 seconds
+Epoch: 707/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 95.5 seconds
+Epoch: 708/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 95.7 seconds
+Epoch: 709/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 95.8 seconds
+Epoch: 710/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.0 seconds
+Epoch: 711/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.2 seconds
+Epoch: 712/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.3 seconds
+Epoch: 713/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.5 seconds
+Epoch: 714/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.6 seconds
+Epoch: 715/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.8 seconds
+Epoch: 716/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 96.9 seconds
+Epoch: 717/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 97.1 seconds
+Epoch: 718/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 97.3 seconds
+Epoch: 719/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 97.4 seconds
+Epoch: 720/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 97.6 seconds
+Epoch: 721/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 97.7 seconds
+Epoch: 722/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 97.8 seconds
+Epoch: 723/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.0 seconds
+Epoch: 724/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.1 seconds
+Epoch: 725/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.3 seconds
+Epoch: 726/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.4 seconds
+Epoch: 727/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.6 seconds
+Epoch: 728/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.7 seconds
+Epoch: 729/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 98.9 seconds
+Epoch: 730/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.0 seconds
+Epoch: 731/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.2 seconds
+Epoch: 732/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.3 seconds
+Epoch: 733/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.5 seconds
+Epoch: 734/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.6 seconds
+Epoch: 735/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.8 seconds
+Epoch: 736/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 99.9 seconds
+Epoch: 737/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 100.1 seconds
+Epoch: 738/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 100.2 seconds
+Epoch: 739/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 100.4 seconds
+Epoch: 740/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 100.5 seconds
+Epoch: 741/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 100.7 seconds
+Epoch: 742/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 100.8 seconds
+Epoch: 743/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.0 seconds
+Epoch: 744/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.1 seconds
+Epoch: 745/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.3 seconds
+Epoch: 746/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.5 seconds
+Epoch: 747/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.6 seconds
+Epoch: 748/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.7 seconds
+Epoch: 749/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 101.8 seconds
+Epoch: 750/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.0 seconds
+Epoch: 751/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.1 seconds
+Epoch: 752/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.3 seconds
+Epoch: 753/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.4 seconds
+Epoch: 754/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.6 seconds
+Epoch: 755/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.7 seconds
+Epoch: 756/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 102.9 seconds
+Epoch: 757/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 103.1 seconds
+Epoch: 758/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 103.1 seconds
+Epoch: 759/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 103.3 seconds
+Epoch: 760/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 103.4 seconds
+Epoch: 761/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 103.6 seconds
+Epoch: 762/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 103.8 seconds
+Epoch: 763/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.0 seconds
+Epoch: 764/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.1 seconds
+Epoch: 765/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.3 seconds
+Epoch: 766/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.4 seconds
+Epoch: 767/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.6 seconds
+Epoch: 768/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.7 seconds
+Epoch: 769/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 104.9 seconds
+Epoch: 770/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 105.0 seconds
+Epoch: 771/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 105.2 seconds
+Epoch: 772/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 105.4 seconds
+Epoch: 773/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 105.5 seconds
+Epoch: 774/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 105.7 seconds
+Epoch: 775/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 105.9 seconds
+Epoch: 776/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.0 seconds
+Epoch: 777/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.1 seconds
+Epoch: 778/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.3 seconds
+Epoch: 779/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.4 seconds
+Epoch: 780/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.6 seconds
+Epoch: 781/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.8 seconds
+Epoch: 782/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 106.9 seconds
+Epoch: 783/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 107.1 seconds
+Epoch: 784/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 107.2 seconds
+Epoch: 785/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 107.4 seconds
+Epoch: 786/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 107.5 seconds
+Epoch: 787/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 107.6 seconds
+Epoch: 788/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 107.8 seconds
+Epoch: 789/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.0 seconds
+Epoch: 790/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.1 seconds
+Epoch: 791/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.2 seconds
+Epoch: 792/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.3 seconds
+Epoch: 793/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.5 seconds
+Epoch: 794/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.6 seconds
+Epoch: 795/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.8 seconds
+Epoch: 796/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 108.9 seconds
+Epoch: 797/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.1 seconds
+Epoch: 798/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.2 seconds
+Epoch: 799/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.3 seconds
+Epoch: 800/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.5 seconds
+Epoch: 801/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.7 seconds
+Epoch: 802/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.8 seconds
+Epoch: 803/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 109.9 seconds
+Epoch: 804/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 110.1 seconds
+Epoch: 805/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 110.2 seconds
+Epoch: 806/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 110.4 seconds
+Epoch: 807/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 110.5 seconds
+Epoch: 808/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 110.7 seconds
+Epoch: 809/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 110.8 seconds
+Epoch: 810/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.0 seconds
+Epoch: 811/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.1 seconds
+Epoch: 812/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.2 seconds
+Epoch: 813/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.4 seconds
+Epoch: 814/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.5 seconds
+Epoch: 815/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.7 seconds
+Epoch: 816/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 111.8 seconds
+Epoch: 817/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.0 seconds
+Epoch: 818/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.1 seconds
+Epoch: 819/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.3 seconds
+Epoch: 820/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.4 seconds
+Epoch: 821/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.6 seconds
+Epoch: 822/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.7 seconds
+Epoch: 823/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 112.9 seconds
+Epoch: 824/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 113.0 seconds
+Epoch: 825/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 113.2 seconds
+Epoch: 826/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 113.4 seconds
+Epoch: 827/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 113.5 seconds
+Epoch: 828/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 113.7 seconds
+Epoch: 829/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 113.8 seconds
+Epoch: 830/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 114.0 seconds
+Epoch: 831/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 114.1 seconds
+Epoch: 832/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 114.3 seconds
+Epoch: 833/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 114.5 seconds
+Epoch: 834/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 114.7 seconds
+Epoch: 835/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 114.8 seconds
+Epoch: 836/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.0 seconds
+Epoch: 837/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.2 seconds
+Epoch: 838/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.3 seconds
+Epoch: 839/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.5 seconds
+Epoch: 840/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.6 seconds
+Epoch: 841/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.8 seconds
+Epoch: 842/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 115.9 seconds
+Epoch: 843/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 116.1 seconds
+Epoch: 844/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 116.2 seconds
+Epoch: 845/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 116.4 seconds
+Epoch: 846/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 116.6 seconds
+Epoch: 847/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 116.7 seconds
+Epoch: 848/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 116.9 seconds
+Epoch: 849/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 117.0 seconds
+Epoch: 850/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 117.2 seconds
+Epoch: 851/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 117.3 seconds
+Epoch: 852/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 117.5 seconds
+Epoch: 853/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 117.7 seconds
+Epoch: 854/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 117.8 seconds
+Epoch: 855/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.0 seconds
+Epoch: 856/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.1 seconds
+Epoch: 857/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.2 seconds
+Epoch: 858/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.4 seconds
+Epoch: 859/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.5 seconds
+Epoch: 860/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.7 seconds
+Epoch: 861/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 118.8 seconds
+Epoch: 862/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.0 seconds
+Epoch: 863/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.1 seconds
+Epoch: 864/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.3 seconds
+Epoch: 865/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.4 seconds
+Epoch: 866/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.5 seconds
+Epoch: 867/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.7 seconds
+Epoch: 868/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 119.8 seconds
+Epoch: 869/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.0 seconds
+Epoch: 870/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.1 seconds
+Epoch: 871/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.3 seconds
+Epoch: 872/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.4 seconds
+Epoch: 873/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.6 seconds
+Epoch: 874/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.8 seconds
+Epoch: 875/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 120.9 seconds
+Epoch: 876/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 121.0 seconds
+Epoch: 877/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 121.2 seconds
+Epoch: 878/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 121.4 seconds
+Epoch: 879/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 121.5 seconds
+Epoch: 880/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 121.7 seconds
+Epoch: 881/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 121.9 seconds
+Epoch: 882/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.0 seconds
+Epoch: 883/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.1 seconds
+Epoch: 884/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.3 seconds
+Epoch: 885/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.4 seconds
+Epoch: 886/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.6 seconds
+Epoch: 887/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.8 seconds
+Epoch: 888/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 122.9 seconds
+Epoch: 889/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 123.1 seconds
+Epoch: 890/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 123.3 seconds
+Epoch: 891/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 123.4 seconds
+Epoch: 892/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 123.5 seconds
+Epoch: 893/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 123.7 seconds
+Epoch: 894/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 123.9 seconds
+Epoch: 895/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.0 seconds
+Epoch: 896/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.2 seconds
+Epoch: 897/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.4 seconds
+Epoch: 898/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.6 seconds
+Epoch: 899/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.6 seconds
+Epoch: 900/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.8 seconds
+Epoch: 901/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 124.9 seconds
+Epoch: 902/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 125.1 seconds
+Epoch: 903/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 125.2 seconds
+Epoch: 904/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 125.4 seconds
+Epoch: 905/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 125.6 seconds
+Epoch: 906/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 125.7 seconds
+Epoch: 907/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 125.9 seconds
+Epoch: 908/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.0 seconds
+Epoch: 909/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.2 seconds
+Epoch: 910/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.3 seconds
+Epoch: 911/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.5 seconds
+Epoch: 912/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.6 seconds
+Epoch: 913/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.8 seconds
+Epoch: 914/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 126.9 seconds
+Epoch: 915/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 127.1 seconds
+Epoch: 916/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 127.2 seconds
+Epoch: 917/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 127.4 seconds
+Epoch: 918/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 127.6 seconds
+Epoch: 919/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 127.7 seconds
+Epoch: 920/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 127.9 seconds
+Epoch: 921/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.0 seconds
+Epoch: 922/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.2 seconds
+Epoch: 923/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.3 seconds
+Epoch: 924/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.4 seconds
+Epoch: 925/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.6 seconds
+Epoch: 926/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.7 seconds
+Epoch: 927/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 128.9 seconds
+Epoch: 928/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 129.0 seconds
+Epoch: 929/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 129.2 seconds
+Epoch: 930/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 129.4 seconds
+Epoch: 931/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 129.5 seconds
+Epoch: 932/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 129.7 seconds
+Epoch: 933/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 129.8 seconds
+Epoch: 934/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.0 seconds
+Epoch: 935/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.1 seconds
+Epoch: 936/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.3 seconds
+Epoch: 937/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.5 seconds
+Epoch: 938/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.6 seconds
+Epoch: 939/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.7 seconds
+Epoch: 940/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 130.9 seconds
+Epoch: 941/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.1 seconds
+Epoch: 942/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.2 seconds
+Epoch: 943/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.4 seconds
+Epoch: 944/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.5 seconds
+Epoch: 945/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.7 seconds
+Epoch: 946/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.8 seconds
+Epoch: 947/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 131.9 seconds
+Epoch: 948/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 132.1 seconds
+Epoch: 949/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 132.2 seconds
+Epoch: 950/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 132.4 seconds
+Epoch: 951/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 132.6 seconds
+Epoch: 952/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 132.7 seconds
+Epoch: 953/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 132.9 seconds
+Epoch: 954/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.0 seconds
+Epoch: 955/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.1 seconds
+Epoch: 956/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.3 seconds
+Epoch: 957/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.5 seconds
+Epoch: 958/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.6 seconds
+Epoch: 959/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.8 seconds
+Epoch: 960/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 133.9 seconds
+Epoch: 961/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 134.1 seconds
+Epoch: 962/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 134.2 seconds
+Epoch: 963/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 134.4 seconds
+Epoch: 964/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 134.6 seconds
+Epoch: 965/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 134.7 seconds
+Epoch: 966/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 134.9 seconds
+Epoch: 967/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.0 seconds
+Epoch: 968/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.2 seconds
+Epoch: 969/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.3 seconds
+Epoch: 970/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.5 seconds
+Epoch: 971/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.7 seconds
+Epoch: 972/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.7 seconds
+Epoch: 973/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 135.9 seconds
+Epoch: 974/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 136.0 seconds
+Epoch: 975/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 136.2 seconds
+Epoch: 976/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 136.4 seconds
+Epoch: 977/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 136.5 seconds
+Epoch: 978/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 136.7 seconds
+Epoch: 979/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 136.8 seconds
+Epoch: 980/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.0 seconds
+Epoch: 981/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.1 seconds
+Epoch: 982/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.3 seconds
+Epoch: 983/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.4 seconds
+Epoch: 984/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.6 seconds
+Epoch: 985/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.7 seconds
+Epoch: 986/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 137.9 seconds
+Epoch: 987/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 138.0 seconds
+Epoch: 988/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 138.2 seconds
+Epoch: 989/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 138.4 seconds
+Epoch: 990/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 138.5 seconds
+Epoch: 991/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 138.7 seconds
+Epoch: 992/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 138.8 seconds
+Epoch: 993/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.0 seconds
+Epoch: 994/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.1 seconds
+Epoch: 995/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.3 seconds
+Epoch: 996/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.4 seconds
+Epoch: 997/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.6 seconds
+Epoch: 998/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.7 seconds
+Epoch: 999/999 | Loss: 0.0000 | Episodes: 1 | Win count: 0 | Win rate: 0.000 | time: 139.9 seconds
+Training complete in: 139.9 seconds
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b> This cell will check to see if the model passes the completion check. Note: This could take several minutes.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[34]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[34]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x76cb69b3ef50&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>This cell will test your model for one game. It will start the pirate at the top-left corner and run <b>play_game()</b>. The agent should find a path from the starting position to the target (treasure). The treasure is located in the bottom-right corner.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[36]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">pirate_start</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">pirate_start</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[36]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x76cb69685250&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Save and Submit Your Work<a rel="noopener" class="anchor-link" href="#Save-and-Submit-Your-Work">&#182;</a></h2><div class="alert alert-block alert-info" style="color:black;">
+<b>Hint:</b> To use the markdown block below, double click in the <b>Type Markdown and LaTeX:  &#120572;2</b> block below, to turn it back to html, Run the cell.
+</div>
+<p>After you have finished creating the code for your notebook, save your work.
+Make sure that your notebook contains your name in the filename (e.g. Doe_Jane_ProjectTwo.html). Download this file as an .html file clicking on <em><strong>file</strong></em> in <em>Jupyter Notebook</em>, navigating down to <em><strong>Download as</strong></em> and clicking on <em><strong>.html</strong></em>.
+Download a copy of your .html file and submit it to Brightspace.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[&#160;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/2026.3.234/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					if (document.querySelector('math, .d2l-element, .d2l-cplus-layout') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+						document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+							elm.setAttribute('style', 'display: block; height: 0.5rem;');
+						});
+
+						document.querySelectorAll('math mmultiscripts > none').forEach(elm => {
+							const mrow = document.createElementNS('http://www.w3.org/1998/Math/MathML', 'mrow');
+							elm.replaceWith(mrow);
+						});
+
+						window.D2L.MathJax.loadMathJax({
+							outputScale: 1.5,
+							renderLatex: false,
+							enableMML3Support: false
+						});
+					}
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2026.3.234/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code, false);
+					});
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2026.3.234/unbundled/embeds.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					window.D2L.EmbedRenderer.renderEmbeds(document.body);
+				});</script></body></html>
